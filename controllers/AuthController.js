@@ -1,19 +1,20 @@
 var bcrypt = require("bcrypt");
 const db = require("../models");
-const jwt = require('jsonwebtoken');
-const {loginRequest} = require('../validations/LoginRequest');
+const jwt = require("jsonwebtoken");
+const { loginRequest } = require("../validations/LoginRequest");
 
 /*login*/
 exports.login = async function (req, res) {
   try {
-
     //validation of the requests
-    const result = await loginRequest.validateAsync(req.body,{
-      abortEarly: false
-     });
+    const result = await loginRequest.validateAsync(req.body, {
+      abortEarly: false,
+    });
 
     //search user
-    const user = await db.User.findOne({ where: { userName: result.username } });
+    const user = await db.User.findOne({
+      where: { userName: result.username },
+    });
 
     if (!user) {
       res.status(404).json("user not found");
@@ -25,7 +26,6 @@ exports.login = async function (req, res) {
       );
 
       if (password_valid) {
-       
         //generate token
         const token = jwt.sign(
           {
@@ -37,8 +37,9 @@ exports.login = async function (req, res) {
             expiresIn: "1h",
           }
         );
-        console.log(token);
-        
+
+        await user.update({ token });
+
         res.status(200).json({
           message: "Authentication successful",
           token: token,
@@ -48,9 +49,8 @@ exports.login = async function (req, res) {
       }
     }
   } catch (err) {
-
-     //check if error comes from joi validation
-     if (err.isJoi === true) {
+    //check if error comes from joi validation
+    if (err.isJoi === true) {
       err.status = 422;
       res.status(422).json(err.details);
     }
@@ -58,12 +58,14 @@ exports.login = async function (req, res) {
   }
 };
 
-
 /*logout*/
-exports.logout =  function (req, res) {
-  // Set the token expiration time to a past date
-  res.cookie('token', '', { expires: new Date(0) });
+exports.logout = async function (req, res) {
 
-  res.json({ message: 'Logged out successfully' });
+  const { userId } = req.decodedToken;
+
+  // Update the token field to null for the corresponding user
+  await db.User.update({ token: null }, { where: { id: userId } });
+
+  res.send({ message: 'Logged out successfully' });
+  
 };
-
