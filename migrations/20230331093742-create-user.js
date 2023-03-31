@@ -12,19 +12,7 @@ module.exports = {
         type: Sequelize.UUID,
         defaultValue:DataTypes.UUIDV4
       },
-      firstName: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      lastName: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      email: {
-        allowNull: true,
-        type: Sequelize.STRING
-      },
-      username: {
+      userName: {
         allowNull: false,
         type: Sequelize.STRING
       },
@@ -34,11 +22,13 @@ module.exports = {
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP')
       }
     });
   },

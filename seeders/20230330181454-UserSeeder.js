@@ -11,10 +11,9 @@ module.exports = {
       [
         {
           id: uuidv4(),
-          username: "admin",
+          userName: "admin",
           password: await bcrypt.hash("P@ssw0rd", salt),
-          createdAt: new Date(),
-          updatedAt: new Date(),
+         
         },
       ],
       {}

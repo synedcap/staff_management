@@ -1,20 +1,19 @@
 var bcrypt = require("bcrypt");
 const db = require("../models");
 const jwt = require('jsonwebtoken');
-const {registerSchema} = require('../validations/RegisterRequest');
-const {loginSchema} = require('../validations/LoginRequest');
+const {loginRequest} = require('../validations/LoginRequest');
 
+/*login*/
 exports.login = async function (req, res) {
   try {
 
     //validation of the requests
-    const result = await loginSchema.validateAsync(req.body,{
+    const result = await loginRequest.validateAsync(req.body,{
       abortEarly: false
      });
 
     //search user
-    const user = await db.User.findOne({ where: { email: result.email } });
-
+    const user = await db.User.findOne({ where: { userName: result.username } });
 
     if (!user) {
       res.status(404).json("user not found");
@@ -24,13 +23,13 @@ exports.login = async function (req, res) {
         req.body.password,
         user.password
       );
-     
-      if (password_valid) {
 
+      if (password_valid) {
+       
         //generate token
         const token = jwt.sign(
           {
-            email: user.email,
+            username: user.username,
             userId: user.id,
           },
           process.env.JWT_KEY,
@@ -39,7 +38,7 @@ exports.login = async function (req, res) {
           }
         );
         console.log(token);
-
+        
         res.status(200).json({
           message: "Authentication successful",
           token: token,
@@ -59,39 +58,12 @@ exports.login = async function (req, res) {
   }
 };
 
-exports.register = async function (req, res) {
-  try {
 
-    //validation of the requests
+/*logout*/
+exports.logout =  function (req, res) {
+  // Set the token expiration time to a past date
+  res.cookie('token', '', { expires: new Date(0) });
 
-     const result = await registerSchema.validateAsync(req.body,{
-      abortEarly: false
-     });
-     
-    //verify if user exists
-    const user = await db.User.findOne({ where: { email: result.email } });
-    const salt = await bcrypt.genSalt(10);
-
-    if (!user) {
-      //save user and send status
-      const newuser = await db.User.create({
-        username: req.body.username,
-        name: req.body.name,
-        email: req.body.email,
-        roles: req.body.roles,
-        password: await bcrypt.hash(req.body.password, salt),
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-
-      res.status(200).json(newuser);
-    }
-  } catch (err) {
-    //check if error comes from joi validation
-    if (err.isJoi === true) {
-      err.status = 422;
-      res.status(422).json(err.details);
-    }
-    res.status(500).json(err);
-  }
+  res.json({ message: 'Logged out successfully' });
 };
+
