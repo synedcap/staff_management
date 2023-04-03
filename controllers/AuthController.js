@@ -13,7 +13,7 @@ exports.login = async function (req, res) {
 
     //search user
     const user = await db.User.findOne({
-      where: { userName: result.username },
+      where: { userName: result.userName },
     });
 
     if (!user) {
@@ -60,12 +60,10 @@ exports.login = async function (req, res) {
 
 /*logout*/
 exports.logout = async function (req, res) {
-
   const { userId } = req.decodedToken;
 
   // Update the token field to null for the corresponding user
   await db.User.update({ token: null }, { where: { id: userId } });
 
-  res.send({ message: 'Logged out successfully' });
-  
+  res.send({ message: "Logged out successfully" });
 };
