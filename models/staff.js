@@ -1,4 +1,7 @@
 'use strict';
+
+const Department = require('../models/department');
+
 const {
   Model
 } = require('sequelize');
@@ -10,7 +13,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      Staff.belongsTo(models.Department, {
+        type: DataTypes.UUID,
+        defaultValue:DataTypes.UUIDV4,
+        allowNull: false,
+        name: 'departmentId'
+      });
     }
   }
   Staff.init({
