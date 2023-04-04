@@ -16,18 +16,16 @@ exports.store = async function (req, res) {
       abortEarly: false,
     });
 
-    //verify if staff exists
-    const staff = await db.Staff.findOne({ where: { email: result.email } });
+    const staff = await db.Staff.findOne({where:{email : result.email}});
 
     if (!staff) {
-      //save user and send status
-      const newStaff = await db.Staff.create(req.body);
-      res.status(200).json(newStaff);
-    }else {
-      //staff already exists, return 409 Conflict status
-      res.status(409).json("Staff member with that email already exists");
+       //save staff and send status
+       const newStaff = await db.Staff.create(req.body);
+       res.status(200).json(newStaff);
+    }else{
+      res.status(409).json("This staff member already exist");
     }
-
+     
   } catch (err) {
     //check if error comes from joi validation
     if (err.isJoi === true) {
@@ -40,16 +38,14 @@ exports.store = async function (req, res) {
 
 /*update  a staff */
 exports.update = async function (req, res) {
-  
   try {
-    const staff = await  db.Staff.findByPk(req.params.id);
-
+    const staff = await db.Staff.findByPk(req.params.id);
 
     if (!staff) {
       return res.status(404).json("Staff not found");
     }
 
-    await staff.update(req.body );
+    await staff.update(req.body);
     res.status(200).json("staff has been updated");
   } catch (err) {
     res.status(500).json(err);
@@ -58,7 +54,6 @@ exports.update = async function (req, res) {
 
 /*delete a staff*/
 exports.delete = async function (req, res) {
-
   try {
     const staff = await db.Staff.findByPk(req.params.id);
 

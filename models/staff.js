@@ -1,6 +1,6 @@
 'use strict';
 
-const Department = require('../models/department');
+const Staff = require('../models/department');
 
 const {
   Model
@@ -14,10 +14,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Staff.belongsTo(models.Department, {
-        type: DataTypes.UUID,
-        defaultValue:DataTypes.UUIDV4,
-        allowNull: false,
-        name: 'departmentId'
+        foreignKey: 'departments', 
+        allowNull: true,
+        name: 'department' 
       });
     }
   }
@@ -26,15 +25,23 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       allowNull: false,
       type: DataTypes.UUID,
-      defaultValue:DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     email: DataTypes.STRING,
-    dateOfStart: DataTypes.DATE,
+    dateOfBirth: DataTypes.DATE,
     isActive: DataTypes.BOOLEAN,
     isArchived: DataTypes.BOOLEAN,
-    post: DataTypes.STRING
+    post: DataTypes.STRING,
+    departments: {
+      type: DataTypes.UUID,
+      allowNull: true,
+      references: {
+        model: 'Departments',
+        key: 'id'
+      }
+    } ,
   }, {
     sequelize,
     modelName: 'Staff',

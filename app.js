@@ -1,5 +1,5 @@
 var express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -8,6 +8,7 @@ var dotenv = require("dotenv");
 var indexRouter = require("./routes/index");
 var staffRouter = require("./routes/staff");
 var authRouter = require("./routes/auth");
+var departmentRouter = require("./routes/department");
 
 var app = express();
 app.use(cors());
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/api/staff", staffRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/department", departmentRouter);
 
 app.listen(3002, () => {
   console.log("server runnin on port 3002");

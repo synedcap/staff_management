@@ -1,7 +1,6 @@
 const Joi = require("joi");
 
 const staffCreateRequest = Joi.object({
-  
   firstName: Joi.string().required(),
 
   lastName: Joi.string().required(),
@@ -10,9 +9,9 @@ const staffCreateRequest = Joi.object({
 
   email: Joi.string().email().required(),
 
-  dateOfStart: Joi.date().required(),
+  dateOfBirth: Joi.date().required(),
 
-  departmentId: Joi.string().required(),
+  departments: Joi.string().required(),
 });
 
 module.exports = {

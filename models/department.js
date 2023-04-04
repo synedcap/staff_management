@@ -1,6 +1,6 @@
 'use strict';
-
 const Staff = require('../models/staff');
+
 const {
   Model
 } = require('sequelize');
@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Department.hasMany(models.Staff, { foreignKey: 'departmentId' });
+      Department.hasMany(models.Staff, {
+        foreignKey: 'departments', 
+        name: 'staff' 
+      });
 
     }
   }
@@ -21,14 +24,12 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
       allowNull: false,
       type: DataTypes.UUID,
-      defaultValue:DataTypes.UUIDV4
+      defaultValue: DataTypes.UUIDV4,
     },
     label: DataTypes.STRING
-  }, 
-  {
+  }, {
     sequelize,
     modelName: 'Department',
   });
-
   return Department;
 };
