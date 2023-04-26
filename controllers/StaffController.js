@@ -3,7 +3,13 @@ const { staffCreateRequest } = require("../validations/StaffCreateRequest");
 
 /*get staff list*/
 exports.index = async function (req, res) {
-  const staff = await db.Staff.findAll();
+  const staff = await db.Staff.findAll({
+    include: [
+      {
+        model: db.Department,
+      },
+    ],
+  });
   res.status(200).json(staff);
 };
 
@@ -16,16 +22,15 @@ exports.store = async function (req, res) {
       abortEarly: false,
     });
 
-    const staff = await db.Staff.findOne({where:{email : result.email}});
+    const staff = await db.Staff.findOne({ where: { email: result.email } });
 
     if (!staff) {
-       //save staff and send status
-       const newStaff = await db.Staff.create(req.body);
-       res.status(200).json(newStaff);
-    }else{
+      //save staff and send status
+      const newStaff = await db.Staff.create(req.body);
+      res.status(200).json(newStaff);
+    } else {
       res.status(409).json("This staff member already exist");
     }
-     
   } catch (err) {
     //check if error comes from joi validation
     if (err.isJoi === true) {
