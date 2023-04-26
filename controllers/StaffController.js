@@ -13,6 +13,7 @@ exports.index = async function (req, res) {
   res.status(200).json(staff);
 };
 
+
 /*store a staff*/
 exports.store = async function (req, res) {
   try {
@@ -41,6 +42,22 @@ exports.store = async function (req, res) {
   }
 };
 
+
+/*update  a staff */
+exports.edit = async function (req, res) {
+  try {
+
+    const staff = await db.Staff.findByPk(req.params.id, {
+      include: [{ model: db.Department }]
+    });
+    
+    res.status(200).json(staff);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+
 /*update  a staff */
 exports.update = async function (req, res) {
   try {
@@ -56,6 +73,7 @@ exports.update = async function (req, res) {
     res.status(500).json(err);
   }
 };
+
 
 /*delete a staff*/
 exports.delete = async function (req, res) {
